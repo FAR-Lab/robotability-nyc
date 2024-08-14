@@ -16,7 +16,7 @@ if [ ! -f data/citibike_202312.csv ]; then wget 'https://s3.amazonaws.com/tripda
 if [ ! -f data/nyc_pedestrian_curb_ramp.csv ]; then wget 'https://data.cityofnewyork.us/api/views/ufzp-rrqu/rows.csv?accessType=DOWNLOAD' -O data/nyc_pedestrian_curb_ramp.csv; fi 
 
 # surveillance cameras from surveilling surveillance paper 
-if [ ! -f data/surveillance_cameras.csv ]; then wget 'https://storage.googleapis.com/scpl-surveillance/camera-data.zip' -O data/surveillance_cameras.zip; fi
+if [ ! -f data/surveillance_cameras.zip ]; then wget 'https://storage.googleapis.com/scpl-surveillance/camera-data.zip' -O data/surveillance_cameras.zip; fi
 
 # nyc forestry tree points 
 if [ ! -f data/nyc_forestry_tree_points.csv ]; then wget 'https://data.cityofnewyork.us/api/views/uvpi-gqnh/rows.csv?accessType=DOWNLOAD' -O data/nyc_forestry_tree_points.csv; fi
@@ -26,3 +26,17 @@ if [ ! -f data/nyc_raised_crosswalk.csv ]; then wget 'https://data.cityofnewyork
 
 # nyc VZW enhanced crossings locations 
 if [ ! -f data/nyc_vzw_enhanced_crossings.csv ]; then wget 'https://data.cityofnewyork.us/api/views/k9a2-vdr8/rows.csv?accessType=DOWNLOAD' -O data/nyc_vzw_enhanced_crossings.csv; fi
+
+# nyc zoning shapefile 
+if [ ! -f data/nyc_zoning.zip ]; then wget 'https://data.cityofnewyork.us/api/geospatial/kdig-pewd?method=export&format=Shapefile' -O data/nyc_zoning.zip; fi
+
+# nyc 1 foot dem integer raster 
+if [ ! -f data/nyc_1ft_dem.zip ]; then wget 'https://sa-static-customer-assets-us-east-1-fedramp-prod.s3.amazonaws.com/data.cityofnewyork.us/NYC_DEM_1ft_Int.zip' -O data/nyc_1ft_dem.zip; fi
+
+# nyc pois 
+if [ ! -f data/nyc_pois.zip ]; then wget 'https://data.cityofnewyork.us/api/views/t95h-5fsr/rows.csv?accessType=DOWNLOAD' -O data/nyc_pois.zip; fi
+
+# will retain clutter from claustrophobic streets analysis 
+
+# nyc bike lanes (weirdly unavailable for download right now)
+# if [ ! -f data/nyc_bike_lanes.zip ]; then wget 'https://data.cityofnewyork.us/api/views/7vsa-caz7/rows.csv?accessType=DOWNLOAD' -O data/nyc_bike_lanes.zip; fi
