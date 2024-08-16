@@ -16,13 +16,24 @@ if [ ! -f data/nyc_cbs.zip ]; then wget 'https://s-media.nyc.gov/agencies/dcp/as
 if [ ! -f data/5g_map.csv ]; then wget 'https://www.speedtest.net/s/ookla-5g-map/archive' -O data/5g_map.csv; fi
 
 # 2023/12 nyc citibike data 
-if [ ! -f data/citibike_202312_nyc.csv.zip ]; then wget 'https://s3.amazonaws.com/tripdata/JC-202312-citibike-tripdata.csv.zip' -O data/citibike_202312.csv.zip; fi
+if [ ! -f data/citibike_202312_nyc.csv ]; then wget 'https://s3.amazonaws.com/tripdata/JC-202312-citibike-tripdata.csv.zip' -O data/citibike_202312.csv.zip; 
+    # unzip 
+    unzip data/citibike_202312.csv.zip -d citibike_202312.csv
+    # remove .zip
+    rm data/citibike_202312.csv.zip
+fi 
 
 # nyc pedestrian curb ramp
 if [ ! -f data/pedestrian_curb_ramp_nyc.csv ]; then wget 'https://data.cityofnewyork.us/api/views/ufzp-rrqu/rows.csv?accessType=DOWNLOAD' -O data/pedestrian_curb_ramp_nyc.csv; fi 
 
 # surveillance cameras from surveilling surveillance paper 
-if [ ! -f data/surveillance_cameras.zip ]; then wget 'https://storage.googleapis.com/scpl-surveillance/camera-data.zip' -O data/surveillance_cameras.zip; fi
+if [ ! -d data/surveillance_cameras ]; then wget 'https://storage.googleapis.com/scpl-surveillance/camera-data.zip' -O data/surveillance_cameras.zip; 
+    # unzip
+    unzip data/surveillance_cameras.zip -d data/surveillance_cameras
+    # remove .zip
+    rm data/surveillance_cameras.zip
+fi
+
 
 
 # nyc raised crosswalk locations 
@@ -32,20 +43,21 @@ if [ ! -f data/raised_crosswalks_nyc.csv ]; then wget 'https://data.cityofnewyor
 if [ ! -f data/vzw_enhanced_crossings_nyc.csv ]; then wget 'https://data.cityofnewyork.us/api/views/k9a2-vdr8/rows.csv?accessType=DOWNLOAD' -O data/vzw_enhanced_crossings_nyc.csv; fi
 
 # nyc zoning shapefile 
-if [ ! -f data/zoning_nyc ]; then wget 'https://data.cityofnewyork.us/api/geospatial/kdig-pewd?method=export&format=Shapefile' -O data/zoning_nyc.zip; fi
-# unzip, remove folder if already exists 
-if [ -d data/zoning_nyc ]; then rm -r data/zoning_nyc; fi
-unzip data/zoning_nyc.zip -d data/zoning_nyc
-# remove .zip 
-rm data/zoning_nyc.zip
+if [ ! -d data/zoning_nyc ]; then wget 'https://data.cityofnewyork.us/api/geospatial/kdig-pewd?method=export&format=Shapefile' -O data/zoning_nyc.zip;
+    # unzip; 
+    unzip data/zoning_nyc.zip -d data/zoning_nyc
+    # remove .zip 
+    rm data/zoning_nyc.zip
+fi;
+
 
 # nyc 1 foot dem integer raster 
-if [ ! -f data/1ft_dem_nyc ]; then wget 'https://sa-static-customer-assets-us-east-1-fedramp-prod.s3.amazonaws.com/data.cityofnewyork.us/NYC_DEM_1ft_Int.zip' -O data/1ft_dem_nyc.zip; fi
-# unzip, remove folder if already exists
-if [ -d data/1ft_dem_nyc ]; then rm -r data/1ft_dem_nyc; fi
-unzip data/1ft_dem_nyc.zip -d data/1ft_dem_nyc
-# remove .zip
-rm data/1ft_dem_nyc.zip
+if [ ! -d data/1ft_dem_nyc ]; then wget 'https://sa-static-customer-assets-us-east-1-fedramp-prod.s3.amazonaws.com/data.cityofnewyork.us/NYC_DEM_1ft_Int.zip' -O data/1ft_dem_nyc.zip;
+
+    unzip data/1ft_dem_nyc.zip -d data/1ft_dem_nyc
+    # remove .zip
+    rm data/1ft_dem_nyc.zip
+fi
 
 # nyc pois 
 if [ ! -f data/pois_nyc.csv ]; then wget 'https://data.cityofnewyork.us/api/views/t95h-5fsr/rows.csv?accessType=DOWNLOAD' -O data/pois_nyc.csv; fi
@@ -85,7 +97,12 @@ if [ ! -f data/street_furniture/bus_stop_shelters_nyc.csv ]; then wget 'https://
 if [ ! -f data/street_furniture/bicycle_parking_shelters_nyc.csv ]; then wget 'https://data.cityofnewyork.us/api/views/dimy-qyej/rows.csv?accessType=DOWNLOAD' -O data/street_furniture/bicycle_parking_shelters_nyc.csv; fi
 
 # nyc bicycle racks 
-if [ ! -f data/street_furniture/bicycle_racks_nyc.csv ]; then wget 'https://data.cityofnewyork.us/api/geospatial/yh4a-g3fj?method=export&format=Original' -O data/street_furniture/bicycle_racks_nyc.csv; fi
+if [ ! -d data/street_furniture/bicycle_racks_nyc ]; then wget 'https://data.cityofnewyork.us/api/geospatial/yh4a-g3fj?method=export&format=Original' -O data/street_furniture/bicycle_racks_nyc.zip; 
+    # unzip 
+    unzip data/street_furniture/bicycle_racks_nyc.zip -d data/street_furniture/bicycle_racks_nyc
+    # remove .zip
+    rm data/street_furniture/bicycle_racks_nyc.zip
+fi
 
 # nyc citybench 
 if [ ! -f data/street_furniture/citybench_nyc.csv ]; then wget 'https://data.cityofnewyork.us/api/views/kuxa-tauh/rows.csv?accessType=DOWNLOAD' -O data/street_furniture/citybench_nyc.csv; fi
@@ -98,6 +115,7 @@ if [ ! -f data/street_furniture/newsstands_nyc.csv ]; then wget 'https://data.ci
 
 # nyc parking meters 
 if [ ! -f data/street_furniture/parking_meters_nyc.csv ]; then wget 'https://data.cityofnewyork.us/api/views/693u-uax6/rows.csv?date=20240816&accessType=DOWNLOAD' -O data/street_furniture/parking_meters_nyc.csv; fi
+
 
 # nyc current street sign work orders 
 # https://data.cityofnewyork.us/Transportation/Street-Sign-Work-Orders/qt6m-xctn/explore/query/SELECT%0A%20%20%60order_number%60%2C%0A%20%20%60record_type%60%2C%0A%20%20%60order_type%60%2C%0A%20%20%60borough%60%2C%0A%20%20%60on_street%60%2C%0A%20%20%60on_street_suffix%60%2C%0A%20%20%60from_street%60%2C%0A%20%20%60from_street_suffix%60%2C%0A%20%20%60to_street%60%2C%0A%20%20%60to_street_suffix%60%2C%0A%20%20%60side_of_street%60%2C%0A%20%20%60order_completed_on_date%60%2C%0A%20%20%60sign_code%60%2C%0A%20%20%60sign_description%60%2C%0A%20%20%60sign_size%60%2C%0A%20%20%60sign_design_voided_on_date%60%2C%0A%20%20%60sign_location%60%2C%0A%20%20%60distance_from_intersection%60%2C%0A%20%20%60arrow_direction%60%2C%0A%20%20%60facing_direction%60%2C%0A%20%20%60sheeting_type%60%2C%0A%20%20%60support%60%2C%0A%20%20%60sign_notes%60%2C%0A%20%20%60sign_x_coord%60%2C%0A%20%20%60sign_y_coord%60%0AWHERE%20caseless_one_of%28%60record_type%60%2C%20%22Current%22%29/page/filter
