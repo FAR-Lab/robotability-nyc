@@ -6,14 +6,17 @@ if [ ! -f data/ntas_nyc.csv ]; then wget 'https://data.cityofnewyork.us/api/view
 # nyc 2020 census blocks 
 if [ ! -f data/nyc_cbs.zip ]; then wget 'https://s-media.nyc.gov/agencies/dcp/assets/files/zip/data-tools/bytes/nycb2020_24c.zip' -O data/nyc_cbs.zip; fi
 
+# nyc community districts 
+if [ ! -f data/community_districts_nyc.zip ]; then wget 'https://data.cityofnewyork.us/api/geospatial/yfnk-k7r4?method=export&format=Shapefile' -O data/community_districts_nyc.zip; fi
+
 # nyc Sidewalk cleanliness scorecard 
 # https://data.cityofnewyork.us/City-Government/Scorecard-Ratings/rqhp-hivt/about_data
 
-# ny satellite availability 
+# ny 4g-lte map  
 # https://broadbandmap.fcc.gov/data-download/nationwide-data?version=dec2023
 
-# 5g map 
-if [ ! -f data/5g_map.csv ]; then wget 'https://www.speedtest.net/s/ookla-5g-map/archive' -O data/5g_map.csv; fi
+# ny 5g-nr map 
+# https://broadbandmap.fcc.gov/data-download/nationwide-data?version=dec2023
 
 # 2023/12 nyc citibike data 
 if [ ! -f data/citibike_202312_nyc.csv ]; then wget 'https://s3.amazonaws.com/tripdata/JC-202312-citibike-tripdata.csv.zip' -O data/citibike_202312.csv.zip; 
@@ -65,7 +68,7 @@ if [ ! -f data/pois_nyc.csv ]; then wget 'https://data.cityofnewyork.us/api/view
 # will retain clutter from claustrophobic streets analysis 
 
 # nyc bike lanes (weirdly unavailable for download right now)
-# if [ ! -f data/bike_lanes.zip ]; then wget 'https://data.cityofnewyork.us/api/views/7vsa-caz7/rows.csv?accessType=DOWNLOAD' -O data/bike_lanes.zip; fi
+# https://data.cityofnewyork.us/dataset/New-York-City-Bike-Routes/mzxg-pwib/about_data
 
 
 
@@ -126,3 +129,22 @@ if [ ! -f data/street_furniture/parking_meters_nyc.csv ]; then wget 'https://dat
 # https://data.cityofnewyork.us/Transportation/Traffic-Bollards-Tracking-and-Installations/3f5t-9dqu/about_data
 # NOT DOWNLOADABLE THROUGH WGET
 
+# traffic management systems 
+
+# vision zero - street improvement project intersections 
+# https://data.cityofnewyork.us/Transportation/VZV_Street-Improvement-Projects-SIPs-intersections/79sh-heg3
+
+# vision zero - turn traffic calming 
+# https://data.cityofnewyork.us/Transportation/VZV_Turn-Traffic-Calming/hz4p-9f7s
+
+# vision zero - leading pedestrian interval signals 
+# https://data.cityofnewyork.us/Transportation/VZV_Leading-Pedestrian-Interval-Signals/mqt5-ctec 
+
+# vision zero - street improvement project corridors 
+# https://data.cityofnewyork.us/Transportation/VZV_Street-Improvement-Projects-SIPs-Corridor/wqhs-q6wd 
+
+# vision zero - speed humps 
+# https://data.cityofnewyork.us/Transportation/VZV_Speed-Humps/7f9e-jic4
+
+# barnes dance intersections
+# https://data.cityofnewyork.us/Transportation/Exclusive-Pedestrian-Signal-Barnes-Dance-Locations/8kuj-2n3u/about_data
