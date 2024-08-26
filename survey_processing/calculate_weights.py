@@ -8,6 +8,31 @@ import ast
 
 warnings.filterwarnings('ignore')
 
+feature_name_dict = {'Sidewalk width': 'sidewalk_width',
+                        'Pedestrian density': 'pedestrian_density',
+                        'Density of street furniture (e.g. garbage, poles)': 'street_furniture_density',
+                        'Sidewalk / Surface roughness': 'sidewalk_roughness',
+                        'Surface condition': 'surface_condition',
+                        'Wireless communication infrastructure (e.g. 5G, IoT, Wi-Fi)': 'communication_infrastructure',
+                        'Slope gradient (i.e. elevation change)': 'slope_gradient',
+                        'Proximity to charging stations': 'charging_station_proximity',
+                        'Local attitudes towards robots': 'local_attitudes',
+                        'Curb ramp availability': 'curb_ramp_availability',
+                        'Weather conditions': 'weather_conditions',
+                        'Crowd dynamics - purpose with which people navigate in the space': 'crowd_dynamics',
+                        'Traffic management systems': 'traffic_management',
+                        'Surveillance coverage (CCTV)': 'surveillance_coverage',
+                        'Zoning laws and regulation': 'zoning_laws',
+                        'Bike lane availability': 'bike_lane_availability',
+                        'Street lighting': 'street_lighting',
+                        'Existence of shade (e.g., trees)': 'shade_availability',
+                        'GPS signal strength': 'gps_signal_strength',
+                        'Pedestrian flow': 'pedestrian_flow',
+                        'Bicycle traffic': 'bicycle_traffic',
+                        'Vehicle traffic': 'vehicle_traffic',
+                        'Existence of detailed digital maps of the area': 'digital_map_existence',
+                        'Intersection safety': 'intersection_safety'}
+
 def parse_list(s):
     try:
         return ast.literal_eval(s)
@@ -153,30 +178,7 @@ def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_fe
 
     print("Weights:", weights)
 
-    feature_name_dict = {'Sidewalk width': 'sidewalk_width',
-                         'Pedestrian density': 'pedestrian_density',
-                         'Density of street furniture (e.g. garbage, poles)': 'street_furniture_density',
-                         'Sidewalk / Surface roughness': 'sidewalk_roughness',
-                         'Surface condition': 'surface_condition',
-                         'Wireless communication infrastructure (e.g. 5G, IoT, Wi-Fi)': 'communication_infrastructure',
-                         'Slope gradient (i.e. elevation change)': 'slope_gradient',
-                         'Proximity to charging stations': 'charging_station_proximity',
-                         'Local attitudes towards robots': 'local_attitudes',
-                         'Curb ramp availability': 'curb_ramp_availability',
-                         'Weather conditions': 'weather_conditions',
-                         'Crowd dynamics - purpose with which people navigate in the space': 'crowd_dynamics',
-                         'Traffic management systems': 'traffic_management',
-                         'Surveillance coverage (CCTV)': 'surveillance_coverage',
-                         'Zoning laws and regulation': 'zoning_laws',
-                         'Bike lane availability': 'bike_lane_availability',
-                         'Street lighting': 'street_lighting',
-                         'Existence of shade (e.g., trees)': 'shade_availability',
-                         'GPS signal strength': 'gps_signal_strength',
-                         'Pedestrian flow': 'pedestrian_flow',
-                         'Bicycle traffic': 'bicycle_traffic',
-                         'Vehicle traffic': 'vehicle_traffic',
-                         'Existence of detailed digital maps of the area': 'digital_map_existence',
-                         'Intersection safety': 'intersection_safety'}
+
 
     # Create a dictionary mapping feature names to weights
     # feature names should not include features that are excluded
