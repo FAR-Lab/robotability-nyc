@@ -182,6 +182,7 @@ def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_fe
     # feature names should not include features that are excluded
     # use include_indices to map the weights to the correct feature names
     feature_names = [indicator_list[i] for i in include_indices]
+    feature_names = [feature_name_dict[feature] for feature in feature_names]
     weight_dict = dict(zip(feature_names, weights))
 
     return weight_dict
