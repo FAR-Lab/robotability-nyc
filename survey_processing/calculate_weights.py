@@ -234,7 +234,7 @@ def main():
 
         if args.write_features:
             features_df = pd.DataFrame(result.items(), columns=['Feature', 'Weight'])
-            features_df.to_csv('feature_weights.csv', index=False)
+            features_df.to_csv('feature_weights_trashbot.csv', index=False)
     except FileNotFoundError:
         print(f"Error: The file was not found.")
         sys.exit(1)
