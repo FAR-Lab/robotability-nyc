@@ -224,6 +224,7 @@ def main():
     parser.add_argument("--contingency_matrix_path", help="Path to the CSV file containing the contingency matrix")
     parser.add_argument("--exclude_features", type=parse_list, help="List of feature numbers to exclude")
     parser.add_argument("--write_features", help="if set, will write the features to a file, feature_weights.csv", action='store_true')
+    parser.add_argument("--out", help="Path to the output file", default="feature_weights.csv")
 
     args = parser.parse_args()
 
@@ -236,7 +237,7 @@ def main():
 
         if args.write_features:
             features_df = pd.DataFrame(result.items(), columns=['Feature', 'Weight'])
-            features_df.to_csv('feature_weights_trashbot.csv', index=False)
+            features_df.to_csv(args.out, index=False)
     except FileNotFoundError:
         print(f"Error: The file was not found.")
         sys.exit(1)
