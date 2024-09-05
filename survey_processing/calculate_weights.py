@@ -164,6 +164,8 @@ def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_fe
 
         # Reduce the matrix to the features not excluded
         contingency_table = contingency_table.iloc[include_indices, include_indices]
+    else: 
+        include_indices = list(range(len(indicator_list)))
 
     # Convert to numpy array for eigenvalue calculation
     matrix_array = contingency_table.to_numpy()
