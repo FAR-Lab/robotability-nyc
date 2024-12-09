@@ -16,7 +16,7 @@ def parse_list(s):
     except (ValueError, SyntaxError):
         raise argparse.ArgumentTypeError("Invalid list format. Please use [x,y,z] format.")
 
-def calculate_weights(survey_path = None, contingency_matrix_path = None, feature_numbers=None):
+def calculate_weights(survey_path = None, contingency_matrix_path = None, exclude_features=None):
 
     """
     Calculates weights from the survey path. Optionally can just process the contigency matrix
@@ -184,9 +184,10 @@ def calculate_weights(survey_path = None, contingency_matrix_path = None, featur
     contingency_table.index = cols
 
 
-    if feature_numbers != None:
-
-        feature_numbers = list(feature_numbers)
+    if exclude_features != None:
+        feature_numbers = list(range(24))
+        for feature in exclude_features:
+            feature_numbers.remove(feature)
         print('TEST', feature_numbers)
 
         # Reduce the matrix to the specified features
@@ -284,15 +285,22 @@ def main():
     parser = argparse.ArgumentParser(description="Calculate weights from the survey data for specified features.")
     parser.add_argument("--survey_path", help="Path to the CSV file containing the survey answers")
     parser.add_argument("--contingency_matrix_path", help="Path to the CSV file containing the contigency matrix")
-    parser.add_argument("--feature_numbers", type=parse_list, help="list of feature numbers to include")
+    parser.add_argument("--exclude_features", type=parse_list, help="List of feature numbers to exclude")
+    parser.add_argument("--write_features", help="if set, will write the features to a file, feature_weights.csv", action='store_true')
+    parser.add_argument("--out", help="Path to the output file", default="feature_weights.csv")
     
     args = parser.parse_args()
 
     try:
-        result = calculate_weights(args.survey_path, args.contingency_matrix_path,args.feature_numbers)
+        result = calculate_weights(args.survey_path, args.contingency_matrix_path, args.exclude_features)
         print("Calculated weights:")
         for feature, weight in result.items():
             print(f"{feature}: {weight}")
+
+
+        if args.write_features:
+            features_df = pd.DataFrame(result.items(), columns=['Feature', 'Weight'])
+            features_df.to_csv(args.out, index=False)
     except FileNotFoundError:
         print(f"Error: The file was not found.")
         sys.exit(1)
