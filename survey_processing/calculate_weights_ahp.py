@@ -166,12 +166,16 @@ def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_fe
             value_counts = new_df[new_df.columns[i]].value_counts()
             for value in value_counts.index:
                 count_value = value_counts[value]
+                #get the other count value
+                count_value_other = count - count_value
+                if count_value_other == 0:
+                    count_value_other = 1
                 value = value.rstrip()
                 #print(count_value,count)
                 if value == ind1:
-                    contingency_table.loc[ind1, ind2] = (count_value/count)
+                    contingency_table.loc[ind1, ind2] = count_value/count_value_other
                 elif value == ind2:
-                    contingency_table.loc[ind2, ind1] = (count_value/count)
+                    contingency_table.loc[ind2, ind1] = count_value/count_value_other
                 else:
                     print('UH OH')
                     print(value_counts)
