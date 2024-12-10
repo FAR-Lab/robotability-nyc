@@ -38,6 +38,40 @@ def parse_list(s):
         return ast.literal_eval(s)
     except (ValueError, SyntaxError):
         raise argparse.ArgumentTypeError("Invalid list format. Please use [x,y,z] format.")
+    
+def count_transitivity_violations_inter(matrix):
+    n = matrix.shape[0]
+    violations = 0
+    no_violations = 0
+    #print(matrix)
+    variation_sets = {}
+    for i in range(n):
+        for j in range(i+1, n):
+            for k in range(j+1, n):
+                if (matrix[i,j] > 0.5 and matrix[j,k] > 0.5 and matrix[k,i] > 0.5) or \
+                   (matrix[j,i] > 0.5 and matrix[k,j] > 0.5 and matrix[i,k] > 0.5):
+                    violations += 1
+                    #if value exists in dictionary, add 1
+                    if (i,j,k) in variation_sets.keys():
+                        variation_sets[(i,j.k)] = variation_sets[(i,j,k)] + 1
+                        print('DOUBLED')
+                    #if value does not exist, create it
+                    else:
+                        variation_sets[(i,j,k)] = 1
+                else:
+                    no_violations += 1
+    return violations, no_violations, violations/(violations+no_violations), variation_sets
+
+def count_transitivity_violations_intra(matrix):
+    n = matrix.shape[0]
+    violations = 0
+    for i in range(n):
+        for j in range(i+1, n):
+            for k in range(j+1, n):
+                if (matrix[i,j] > 1 and matrix[j,k] > 1 and matrix[k,i] > 1) or \
+                   (matrix[j,i] > 1 and matrix[k,j] > 1 and matrix[i,k] > 1):
+                    violations += 1
+    return violations
 
 def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_features=None):
     """
@@ -135,9 +169,9 @@ def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_fe
                 value = value.rstrip()
                 #print(count_value,count)
                 if value == ind1:
-                    contingency_table.loc[ind1, ind2] = (count_value/count) * 10
+                    contingency_table.loc[ind1, ind2] = (count_value/count)
                 elif value == ind2:
-                    contingency_table.loc[ind2, ind1] = (count_value/count) * 10
+                    contingency_table.loc[ind2, ind1] = (count_value/count)
                 else:
                     print('UH OH')
                     print(value_counts)
@@ -154,7 +188,7 @@ def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_fe
         #now, for the lower matrix, fill out the values by being Mji = 1/Mij, but only lower triangle
         for i in range(len(indicators)):
             for j in range(len(indicators)):
-                if i > j:
+                if i < j:
                     
                     if contingency_table.iloc[i,j] == 0:
                         if contingency_table.iloc[j,i] == 0:
@@ -177,6 +211,9 @@ def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_fe
         contingency_table = pd.read_csv(contingency_matrix_path, index_col=0)
         
 
+    #calculate transitivity violations
+    inter_violations,no_violations,inter_rate,variation_sets = count_transitivity_violations_inter(contingency_table.to_numpy())
+    print('Inter-rater transitivity violations: ', inter_violations)
     #make contingency columns and indexes correspond to numbers
 
     cols = contingency_table.columns
