@@ -67,8 +67,6 @@ def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_fe
 
     if contingency_matrix_path is None:
         df = pd.read_csv(survey_path)
-        # Remove first 4 columns, and first 2 rows
-        df = df.iloc[1:, 4:]
         # Remove unnecessary columns
         df = df.drop(['RecordedDate', 'ResponseId', 'RecipientLastName', 'RecipientFirstName', 'RecipientEmail',
                       'ExternalReference', 'LocationLatitude', 'LocationLongitude', 'DistributionChannel', 'UserLanguage',
@@ -81,7 +79,6 @@ def calculate_weights(survey_path=None, contingency_matrix_path=None, exclude_fe
             new_cols.append(col)
 
         df.columns = new_cols
-        df = df.iloc[1:, :]
 
         # Remove samples where "Q5" is nan
         print('Shape with non-valid answers:')
