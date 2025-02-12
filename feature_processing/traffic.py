@@ -13,6 +13,9 @@ from glob import glob
 import os
 import sys 
 
+from pandarallel import pandarallel
+pandarallel.initialize(progress_bar=True, nb_workers=16)
+
 # %%
 PROJ_CRS = 'EPSG:2263'
 # increasing the distance acts as a smoothing kernal, as more points get to 'count' the traffic from an image
@@ -21,13 +24,6 @@ FOV =  180 # Field of view in degrees
 DEBUG_SAMPLE=False
 LOCAL_PATH='/share/ju/urban-fingerprinting/output/default/df'
 
-# %%
-# load nyc ntas 
-nyc_ntas = pd.read_csv("data/ntas_nyc.csv")
-nyc_ntas = gpd.GeoDataFrame(nyc_ntas, geometry=nyc_ntas['the_geom'].apply(wkt.loads), crs='EPSG:4326').to_crs(PROJ_CRS)
-
-# %%
-nyc_ntas.NTAName.values
 
 # %%
 DoCs = ["2023-08-11", "2023-08-12", "2023-08-13", "2023-08-14", "2023-08-17", "2023-08-18", "2023-08-20", "2023-08-21", "2023-08-22", "2023-08-23", "2023-08-24", "2023-08-28", "2023-08-29", "2023-08-30", "2023-08-31"]
@@ -58,7 +54,7 @@ traffic['camera_heading'].describe()
 
 # %%
 # load nyc sidewalk graph 
-nyc_sidewalks = pd.read_csv("data/sidewalks_nyc_segmentized.csv", engine='pyarrow')
+nyc_sidewalks = pd.read_csv("../data/sidewalks_nyc_segmentized.csv", engine='pyarrow')
 nyc_sidewalks = gpd.GeoDataFrame(nyc_sidewalks, geometry=nyc_sidewalks['geometry'].apply(wkt.loads), crs='EPSG:2263')
 
 # %%
@@ -124,7 +120,7 @@ if traffic.crs != nyc_sidewalks.crs:
 traffic['original_geometry'] = traffic['geometry']
 
 # Create semicircle geometries
-traffic['geometry'] = traffic.apply(lambda row: create_semicircle(row['geometry'], row['camera_heading'], MAX_DISTANCE), axis=1)
+traffic['geometry'] = traffic.parallel_apply(lambda row: create_semicircle(row['geometry'], row['camera_heading'], MAX_DISTANCE), axis=1)
 
 
 
@@ -164,7 +160,7 @@ print(f"Rows with 0 crowdedness data: {zero_crowdedness_count} points, {zero_cro
 
 # %%
 # write average traffic to disk 
-avg_traffic_by_sidewalk.to_csv(f"data/avg_traffic_by_sidewalk_august.csv")
+avg_traffic_by_sidewalk.to_csv(f"../data/avg_traffic_by_sidewalk_august.csv")
 
 # %%
 

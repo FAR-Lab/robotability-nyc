@@ -18,14 +18,18 @@ pandarallel.initialize(progress_bar=True, nb_workers=14)
 
 
 
+
 # %%
-crs = {'init': 'epsg:3627'} #local crs
+crs = 'EPSG:3627' #local crs
 
 # %% [markdown]
 # ## Get Sidewalk Centerlines
 
 # %%
-df = gpd.read_file("../data/Sidewalk.geojson")
+#df = gpd.read_file("../data/Sidewalk.geojson")
+df = pd.read_csv("../data/NYC_Planimetric_Database__Sidewalk_20250212.csv")
+# load wkt geometry 
+df = gpd.GeoDataFrame(df, crs='EPSG:4326', geometry=gpd.GeoSeries.from_wkt(df['the_geom']))
 print("Loaded sidewalk data")
 
 # %%
@@ -34,7 +38,9 @@ df = df.to_crs('EPSG:3627')
 
 # %%
 df_dissolved = gpd.GeoDataFrame(geometry=gpd.GeoSeries([geom for geom in df.unary_union.geoms]))
+
 print("Dissolved sidewalk data")
+#print(df_dissolved)
 
 # %%
 
@@ -45,14 +51,22 @@ print("Exploded sidewalk data")
 # parallelized version 
 def get_centerline(row):
     try: 
-        return Centerline(row['geometry'])
+        return Centerline(row['geometry']).geometry.geoms
     except Exception as e:
         print(e)
         return None
 
 
 df_exploded['centerlines'] = df_exploded.parallel_apply(lambda row: get_centerline(row), axis=1)
+# convert GeometrySequnce of LineStrings to MultiLineString
+df_exploded['centerlines'] = df_exploded['centerlines'].parallel_apply(lambda row: MultiLineString(row) if row else None)
+
+
+df_exploded = df_exploded.set_geometry('centerlines')
 print("Generated centerlines")
+
+df_exploded.sample(frac=0.025).plot(figsize=(12, 12), cmap='tab10').get_figure().savefig('centerlines.png')
+
 
 # %% [markdown]
 # ## Remove Short Line Ends
@@ -68,6 +82,10 @@ def get_linemerge(row):
 
 df_exploded['centerlines'] = df_exploded['centerlines'].parallel_apply(get_linemerge)
 
+
+print(df_exploded['centerlines'])
+
+
 # %%
 def remove_short_lines(line):
 
@@ -78,9 +96,9 @@ def remove_short_lines(line):
         
         passing_lines = []
     
-        for i, linestring in enumerate(line):
+        for i, linestring in enumerate(line.geoms):
             
-            other_lines = MultiLineString([x for j, x in enumerate(line) if j != i])
+            other_lines = MultiLineString([x for j, x in enumerate(line.geoms) if j != i])
             
             p0 = Point(linestring.coords[0])
             p1 = Point(linestring.coords[-1])
@@ -190,7 +208,7 @@ def get_avg_distances(row):
         
         distances = []
         
-        for point in points:
+        for point in points.geoms:
             p1, p2 = nearest_points(sidewalk_lines, point)
             distances.append(p1.distance(p2))
             
@@ -199,8 +217,8 @@ def get_avg_distances(row):
     return avg_distances
 
 # %%
+# increase max col width
 df_exploded['avg_distances'] = df_exploded.parallel_apply(lambda row: get_avg_distances(row), axis=1)
-
 # %%
 data = {'geometry': [], 'width': []}
 
@@ -215,8 +233,14 @@ for i, row in df_exploded.iterrows():
 df_segments = pd.DataFrame(data)
 df_segments = GeoDataFrame(df_segments, crs=crs, geometry='geometry')
 
+df_exploded = df_exploded[['centerlines']]
+df_exploded = gpd.GeoDataFrame(df_exploded, crs=crs, geometry='centerlines')
+
+# plot the centerlines and save to png 
+df_exploded.plot(figsize=(12, 12), cmap='tab10').get_figure().savefig('centerlines.png')
+
 # %%
-df_exploded.to_parquet('../data/sidewalk_centerlines.parquet')
-df_segments.to_parquet('../data/sidewalk_widths.parquet')
+df_exploded.to_file('../data/sidewalk_centerlines.geojson')
+df_segments.to_file('../data/sidewalk_widths.geojson')
 
 
